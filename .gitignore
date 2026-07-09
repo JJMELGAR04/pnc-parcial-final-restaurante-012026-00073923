@@ -16,7 +16,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-.env.example
+.env
 
 ### IntelliJ IDEA ###
 .idea

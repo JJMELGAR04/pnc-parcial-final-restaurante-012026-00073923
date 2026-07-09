@@ -3,7 +3,7 @@
 .gradle
 build
 *.md
-.env.example
+.env
 .idea
 *.iml
 out

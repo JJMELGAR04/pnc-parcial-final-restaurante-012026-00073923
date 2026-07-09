@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build-and-test:
+    name: Compilar y ejecutar pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Dar permisos de ejecucion a gradlew
+        run: chmod +x ./gradlew
+
+      - name: Compilar proyecto
+        run: ./gradlew build -x test --no-daemon
+
+      - name: Ejecutar pruebas
+        run: ./gradlew test --no-daemon
+
+      - name: Publicar reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test-results/test/
+          retention-days: 5
+
+  secret-scan:
+    name: Escanear secretos expuestos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # necesario para que gitleaks escanee todo el historial, no solo el ultimo commit
+
+      - name: Ejecutar Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  vulnerability-scan:
+    name: Escanear vulnerabilidades criticas
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Dar permisos de ejecucion a gradlew
+        run: chmod +x ./gradlew
+
+      - name: Construir jar
+        run: ./gradlew build -x test --no-daemon
+
+      - name: Escanear imagen Docker con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
