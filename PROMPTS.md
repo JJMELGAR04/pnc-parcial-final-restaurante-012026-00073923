@@ -4,7 +4,7 @@ Prompt: "Crea las entidades del dominio para el sistema de pedidos: Usuario, Suc
 
 Prompt: "Crea los repositorios JPA para las entidades, incluyendo las consultas necesarias para filtrar por sucursal." Qué generó: 6 interfaces de repositorio con derived queries de Spring Data. Decisión clave a entender: findByIdAndSucursalId en PedidoRepository filtra la pertenencia a sucursal directamente en la consulta SQL, en vez de traer la entidad completa y comparar en Java — esto es lo que hace que la autorización por atributo sea eficiente y no se pueda "olvidar" en algún punto del código de servicio.
 
-
+it commit -m "feat: agregar DTOs de request/response para evitar exponer entidades JPA en la API"
 
 
 
