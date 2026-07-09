@@ -1,0 +1,10 @@
+.git
+.gitignore
+.gradle
+build
+*.md
+.env.example
+.idea
+*.iml
+out
+.DS_Store

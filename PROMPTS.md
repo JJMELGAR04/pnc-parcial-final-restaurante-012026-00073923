@@ -12,6 +12,6 @@ Prompt: "Implementa AuthController y AuthService con login, refresh token con ro
 
 Prompt: "Implementa los services y controllers de Sucursal, Usuario, Mesa, Producto y Pedido, aplicando la regla de autorización por sucursal: un Encargado de turno solo puede gestionar mesas/pedidos de su propia sucursal, mientras que un Cliente solo accede a sus propios pedidos." Qué generó: los 5 services/controllers completos con el patrón de doble capa de autorización (rol en @PreAuthorize del controller + atributo en el service). Lo que tuve que entender a fondo para poder defenderlo: el método verificarAccesoASucursal en MesaService y buscarConAccesoVerificado en PedidoService son el corazón de la Opción B — comparan explícitamente la sucursal del usuario autenticado contra la sucursal del recurso solicitado, algo que ningún hasRole() de Spring Security resuelve por sí solo.
 
-
+Prompt: "Implementa un GlobalExceptionHandler que traduzca todas las excepciones del sistema a respuestas HTTP consistentes, sin filtrar detalles internos." Qué generó: el handler completo con 8 casos manejados. Detalle de seguridad que verifiqué: el catch-all de Exception registra el error completo en el log del servidor (log.error) pero nunca expone el stacktrace ni el mensaje interno al cliente — solo un mensaje genérico. Esto es justo el tipo de cosa que, si no se pide explícitamente, la IA puede olvidar o hacer al revés (devolver ex.getMessage() de cualquier excepción sin filtrar).
 
 
