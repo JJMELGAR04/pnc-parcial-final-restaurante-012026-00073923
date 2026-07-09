@@ -1,3 +1,24 @@
 spring:
   application:
     name: pnc-parcial-final-restaurante
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:restaurante_db}
+    username: ${DB_USER:restaurante_user}
+    password: ${DB_PASSWORD:restaurante_pass}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+server:
+  port: ${SERVER_PORT:8080}
+
+jwt:
+  secret: ${JWT_SECRET:cambia-este-secreto-en-produccion-debe-ser-largo-y-aleatorio-256-bits}
+  access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION:900000}      # 15 minutos
+  refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION:604800000} # 7 días
