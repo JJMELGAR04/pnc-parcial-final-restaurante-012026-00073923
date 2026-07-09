@@ -8,7 +8,7 @@ Prompt: "Crea los DTOs de request/response para todos los endpoints, sin exponer
 
 Prompt: "Implementa la seguridad JWT completa: JwtService para generar/validar tokens, filtro de autenticación, UserDetailsService y SecurityConfig, con sesiones stateless." Qué generó: las 5 clases de seguridad. Detalles de seguridad que tuve que entender y verificar: (1) el catch silencioso en el filtro JWT evita filtrar detalles internos de errores de parsing al cliente; (2) csrf deshabilitado se justifica porque la API es 100% stateless con JWT, no usa cookies de sesión; (3) el refresh token no lleva claims de rol/sucursal a propósito, para reducir qué se puede hacer con él si se filtra.
 
-
+Prompt: "Implementa AuthController y AuthService con login, refresh token con rotación, y logout." Qué generó: el flujo completo de autenticación conectado con la tabla refresh_tokens. Decisiones de seguridad que verifiqué y puedo explicar: (1) el mensaje de error en login es genérico a propósito para no permitir enumeración de usuarios registrados; (2) se implementó rotación de refresh tokens (no pedida explícitamente por el enunciado, pero es una mejora de seguridad estándar que puedo justificar); (3) logout revoca en base de datos, no depende solo de que el cliente "olvide" el token.
 
 
 
