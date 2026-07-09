@@ -4,9 +4,9 @@ Prompt: "Crea las entidades del dominio para el sistema de pedidos: Usuario, Suc
 
 Prompt: "Crea los repositorios JPA para las entidades, incluyendo las consultas necesarias para filtrar por sucursal." Qué generó: 6 interfaces de repositorio con derived queries de Spring Data. Decisión clave a entender: findByIdAndSucursalId en PedidoRepository filtra la pertenencia a sucursal directamente en la consulta SQL, en vez de traer la entidad completa y comparar en Java — esto es lo que hace que la autorización por atributo sea eficiente y no se pueda "olvidar" en algún punto del código de servicio.
 
-it commit -m "feat: agregar DTOs de request/response para evitar exponer entidades JPA en la API"
+Prompt: "Crea los DTOs de request/response para todos los endpoints, sin exponer las entidades JPA directamente." Qué generó: 18 records con validaciones Bean Validation. Decisiones de seguridad a poder explicar: (1) UsuarioResponse excluye el password explícitamente; (2) PedidoRequest no acepta clienteId en el body — el cliente autenticado se toma del JWT en el controller, nunca de lo que el usuario mande, para que nadie pueda crear pedidos a nombre de otra persona.
 
-
+Prompt: "Implementa la seguridad JWT completa: JwtService para generar/validar tokens, filtro de autenticación, UserDetailsService y SecurityConfig, con sesiones stateless." Qué generó: las 5 clases de seguridad. Detalles de seguridad que tuve que entender y verificar: (1) el catch silencioso en el filtro JWT evita filtrar detalles internos de errores de parsing al cliente; (2) csrf deshabilitado se justifica porque la API es 100% stateless con JWT, no usa cookies de sesión; (3) el refresh token no lleva claims de rol/sucursal a propósito, para reducir qué se puede hacer con él si se filtra.
 
 
 
